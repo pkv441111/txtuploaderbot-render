@@ -1,13 +1,11 @@
-FROM python:3.9-slim-buster
-RUN apt-get update -y && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends gcc libffi-dev musl-dev ffmpeg aria2 python3-pip \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+FROM python:3.9.6-alpine3.14
 
-COPY . /app/
-WORKDIR /app/
+WORKDIR /app
 
-RUN pip install --no-cache-dir --only-binary=:all: TgCrypto \
-    && pip install --no-cache-dir -r requirements.txt
-*RUN pip3 install --no-cache-dir --upgrade --requirement requirements.txt
+COPY . .
+
+RUN apk add --no-cache gcc libffi-dev musl-dev ffmpeg aria2 && pip install --no-cache-dir -r requirements.txt
+
+*CMD [ "python", "./main.py" ]
+
 CMD python3 modules/main.py
